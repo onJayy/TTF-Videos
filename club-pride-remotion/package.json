@@ -1,0 +1,23 @@
+{
+  "name": "ttf-club-pride-remotion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TTF Club Pride ad templates (Slot Machine Spin + Map Roulette) built with Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render:slot": "remotion render SlotSpin out/slot-spin.mp4",
+    "render:map": "remotion render MapRoulette out/map-roulette.mp4",
+    "render:all": "npm run render:slot && npm run render:map",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.539",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.539"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}
