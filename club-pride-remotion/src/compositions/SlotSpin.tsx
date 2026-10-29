@@ -10,7 +10,7 @@ import {LandingHeadline} from '../components/LandingHeadline';
 import {RapidRound} from '../components/RapidRound';
 import {EndCard} from '../components/ResultAndEnd';
 import {Sfx} from '../components/Sfx';
-import {ClubShield} from '../components/ClubShield';
+import {ClubBadge} from '../components/ClubShield';
 import {MusicBed} from '../components/MusicBed';
 
 export type SlotSpinProps = {clubId: string};
@@ -28,7 +28,7 @@ const shuffled = (list: Club[], seed: string) =>
 const ReelItem: React.FC<{club: Club; y: number; focus: number}> = ({club, y, focus}) => (
   <div style={{position: 'absolute', left: 0, top: y, width: WIN.w, height: ITEM_H, display: 'flex', alignItems: 'center', gap: 34, paddingLeft: 70,
     transform: `scale(${1 + 0.1 * focus})`, transformOrigin: '50% 50%'}}>
-    <ClubShield club={club} size={170} glow={focus * 18} />
+    <ClubBadge club={club} size={170} glow={focus * 18} />
     <div style={{display: 'flex', flexDirection: 'column'}}>
       <div style={{fontWeight: 800, fontSize: 66, color: BRAND.ink, lineHeight: 1.05, whiteSpace: 'nowrap'}}>{club.short}</div>
       <div style={{fontWeight: 600, fontSize: 28, color: '#6E756C', whiteSpace: 'nowrap', marginTop: 6}}>{club.ground}</div>

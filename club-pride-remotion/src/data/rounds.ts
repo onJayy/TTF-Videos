@@ -28,7 +28,7 @@ export type ClubRound = {
 
 /** Helper for writing generated questions: the right answer is options[answer]. */
 const gen = (q: string, options: string[], answer: number, pick = answer): Question => ({q, options, answer, pick, correct: pick === answer});
-const READABLE = {perQuestion: 117, leadIn: 3.1}; // 3-second countdown, then the answer (3.9 s per question)
+const READABLE = {perQuestion: 147, leadIn: 4.1}; // 4-second countdown, then the answer (4.9 s per question)
 
 export const ROUNDS: Record<string, ClubRound> = {
   arsenal: {

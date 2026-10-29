@@ -99,7 +99,7 @@ export const RapidRound: React.FC<{club: Club; round: ClubRound}> = ({club, roun
 
       {/* 3-2-1 countdown ring (generated rounds) */}
       {lead >= 60 && sinceReveal < 0 ? (() => {
-        const left = Math.min(3, Math.ceil((lead - lf) / fps));
+        const left = Math.min(Math.floor(lead / fps), Math.ceil((lead - lf) / fps));
         const frac = Math.min(1, lf / lead);
         const pulse = 1 + 0.14 * Math.exp(-((lf % fps) / 5));
         const urgent = left <= 1;
@@ -139,7 +139,7 @@ export const RapidRound: React.FC<{club: Club; round: ClubRound}> = ({club, roun
         return (
           <React.Fragment key={i}>
             <Sfx at={i * QF} src={i === 0 ? 'whoosh.wav' : 'tick.wav'} volume={i === 0 ? 0.6 : 0.5} />
-            {lead >= 60 ? [1, 2].map((k) => <Sfx key={k} at={i * QF + k * fps} src="tick.wav" volume={0.5} />) : null}
+            {lead >= 60 ? new Array(Math.floor(lead / fps) - 1).fill(0).map((_, k) => <Sfx key={k} at={i * QF + (k + 1) * fps} src="tick.wav" volume={0.5} />) : null}
             <Sfx at={i * QF + lead} src={qq.correct ? 'correct.wav' : 'wrong.wav'} volume={qq.correct ? 0.7 : 0.55} />
             {qq.correct ? <Sfx at={i * QF + lead + 2} src={`ding_${String(Math.min(11, 3 + s)).padStart(2, '0')}.wav`} volume={0.35} /> : null}
           </React.Fragment>

@@ -4,7 +4,7 @@ Two 9:16 (1080×1920) video templates that promote the **Club Pride** game mode 
 
 | Composition | Hook | Then |
 |---|---|---|
-| `SlotSpin` | "Spin For A Club": a slot-machine reel of club shields spins, rattles and lands on a club | 3-question round, each with a 3-second countdown (from a real screen recording or generated questions) → "Can you beat it?" end card |
+| `SlotSpin` | "Spin For A Club": a slot-machine reel of club badges spins, rattles and lands on a club | 3-question round, each with a 4-second countdown (from a real screen recording or generated questions) → "Can you beat it?" end card |
 | `MapRoulette` | A spotlight hops between grounds on a map of England, slows, lands on a club and zooms in | same round → end card |
 
 A 3-question generated round is ~15 s (length adjusts to the number of questions). Layout keeps clear of the Instagram/TikTok header, caption and side buttons.
@@ -52,7 +52,9 @@ spurs: {clubId: 'spurs', pacing: READABLE, questions: [
 ]},
 ```
 
-`READABLE` gives each question a 3-second countdown ring (with ticks) before the answer is revealed. Man United and Tottenham are set up this way.
+`READABLE` gives each question a 4-second countdown ring (with ticks) before the answer is revealed. Man United and Tottenham are set up this way.
+
+Club badges for the slot reel: add `public/crests/<club-id>.png` (see `public/crests/README.md`). Clubs without a file use a colour shield with their three-letter code.
 
 Clubs (names, grounds, colours, map positions) live in `src/data/clubs.ts`. Clubs outside this season's Premier League (e.g. West Ham) are added to the reel/map automatically when they are the featured club.
 
