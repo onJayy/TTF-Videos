@@ -8,9 +8,9 @@ import {Confetti} from '../components/Confetti';
 import {DarkBackground} from '../components/DarkBackground';
 import {LandingHeadline} from '../components/LandingHeadline';
 import {RapidRound} from '../components/RapidRound';
-import {EndCard, Result} from '../components/ResultAndEnd';
+import {EndCard} from '../components/ResultAndEnd';
 import {Sfx} from '../components/Sfx';
-import {StadiumBadge} from '../components/StadiumBadge';
+import {ClubShield} from '../components/ClubShield';
 import {MusicBed} from '../components/MusicBed';
 
 export type SlotSpinProps = {clubId: string};
@@ -19,7 +19,7 @@ const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const SPIN_START = 6;
 const LAND = 66; // frame the reel stops on the club
 const ITEM_H = 236;
-const WIN = {x: 90, y: 560, w: 900, h: 708}; // reel window (3 rows)
+const WIN = {x: 90, y: 640, w: 900, h: 708}; // reel window (3 rows)
 
 // deterministic shuffle so the reel order looks random but renders identically every time
 const shuffled = (list: Club[], seed: string) =>
@@ -28,7 +28,7 @@ const shuffled = (list: Club[], seed: string) =>
 const ReelItem: React.FC<{club: Club; y: number; focus: number}> = ({club, y, focus}) => (
   <div style={{position: 'absolute', left: 0, top: y, width: WIN.w, height: ITEM_H, display: 'flex', alignItems: 'center', gap: 34, paddingLeft: 70,
     transform: `scale(${1 + 0.1 * focus})`, transformOrigin: '50% 50%'}}>
-    <StadiumBadge club={club} size={170} glow={focus * 18} />
+    <ClubShield club={club} size={170} glow={focus * 18} />
     <div style={{display: 'flex', flexDirection: 'column'}}>
       <div style={{fontWeight: 800, fontSize: 66, color: BRAND.ink, lineHeight: 1.05, whiteSpace: 'nowrap'}}>{club.short}</div>
       <div style={{fontWeight: 600, fontSize: 28, color: '#6E756C', whiteSpace: 'nowrap', marginTop: 6}}>{club.ground}</div>
@@ -97,9 +97,9 @@ const SlotIntro: React.FC<{club: Club; total: number}> = ({club, total}) => {
   return (
     <AbsoluteFill style={{opacity: 1 - exit, transform: `translateY(${-exit * 160}px) scale(${1 - exit * 0.15})`}}>
       {/* hook */}
-      <div style={{position: 'absolute', left: 540, top: 250, transform: `translate(-50%,-50%) scale(${0.8 + 0.2 * hook})`, opacity: hook, background: '#fff', color: BRAND.greenDark,
+      <div style={{position: 'absolute', left: 540, top: 340, transform: `translate(-50%,-50%) scale(${0.8 + 0.2 * hook})`, opacity: hook, background: '#fff', color: BRAND.greenDark,
         fontWeight: 800, fontSize: 58, padding: '18px 46px', borderRadius: 999, whiteSpace: 'nowrap', boxShadow: '0 24px 60px rgba(0,0,0,.4)'}}>
-        Spin for a club
+        Spin For A Club
       </div>
       {/* machine */}
       <div style={{position: 'absolute', inset: 0, transform: `scale(${0.85 + 0.15 * machineIn + 0.03 * landPop * Math.exp(-(f - LAND) / 8)})`, opacity: machineIn}}>
@@ -119,7 +119,7 @@ const SlotIntro: React.FC<{club: Club; total: number}> = ({club, total}) => {
         <div style={{position: 'absolute', left: WIN.x - 44, top: WIN.y + WIN.h / 2 - 22, width: 0, height: 0, borderTop: '22px solid transparent', borderBottom: '22px solid transparent', borderLeft: `30px solid ${landed ? club.colour : BRAND.mint}`}} />
         <div style={{position: 'absolute', left: WIN.x + WIN.w + 14, top: WIN.y + WIN.h / 2 - 22, width: 0, height: 0, borderTop: '22px solid transparent', borderBottom: '22px solid transparent', borderRight: `30px solid ${landed ? club.colour : BRAND.mint}`}} />
       </div>
-      <LandingHeadline club={club} total={total} at={LAND + 4} top={250} />
+      <LandingHeadline club={club} total={total} at={LAND + 4} top={340} />
       <Confetti at={LAND} colors={[club.colour, club.colour2 ?? '#fff', '#FFFFFF', BRAND.mint]} count={80} />
       {/* sound */}
       <Sfx at={0} src="whoosh.wav" volume={0.5} />
@@ -141,7 +141,6 @@ export const SlotSpin: React.FC<SlotSpinProps> = ({clubId}) => {
       <DarkBackground tint={club.colour} tintAmount={tint} />
       <Sequence durationInFrames={T.intro} name="Slot spin"><SlotIntro club={club} total={round.questions.length} /></Sequence>
       <Sequence from={T.intro} durationInFrames={resultStart(round) - T.intro} name="Rapid round"><RapidRound club={club} round={round} /></Sequence>
-      <Sequence from={resultStart(round)} durationInFrames={T.result} name="Result"><Result club={club} round={round} /></Sequence>
       <Sequence from={endStart(round)} durationInFrames={T.end} name="End card"><EndCard round={round} /></Sequence>
       <MusicBed />
     </AbsoluteFill>

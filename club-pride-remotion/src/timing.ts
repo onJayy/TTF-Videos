@@ -5,7 +5,7 @@ export const T = {
   intro: 108, // spin / roulette + landing headline (3.6 s)
   perQuestion: 39, // each rapid-fire question (1.3 s)
   leadIn: 0.8, // seconds of recording shown before each answer reveal
-  result: 60, // big score
+  result: 0, // score screen removed (set >0 and re-add <Result> to bring it back)
   end: 96, // end card
 };
 

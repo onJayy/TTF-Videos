@@ -9,7 +9,7 @@ import {DarkBackground} from '../components/DarkBackground';
 import {LandingHeadline} from '../components/LandingHeadline';
 import {MusicBed} from '../components/MusicBed';
 import {RapidRound} from '../components/RapidRound';
-import {EndCard, Result} from '../components/ResultAndEnd';
+import {EndCard} from '../components/ResultAndEnd';
 import {Sfx} from '../components/Sfx';
 import {StadiumBadge} from '../components/StadiumBadge';
 import {MapView, project, toKm, UkMap} from '../components/UkMap';
@@ -19,7 +19,7 @@ export type MapRouletteProps = {clubId: string};
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const HOP_START = 8;
 const LAND = 68;
-const BASE: MapView = {cx: toKm(53.0, -1.27)[0], cy: toKm(53.0, -1.27)[1], scale: 3.05, screenY: 1060};
+const BASE: MapView = {cx: toKm(53.0, -1.27)[0], cy: toKm(53.0, -1.27)[1], scale: 2.35, screenY: 972};
 const LONDON = ['arsenal', 'brentford', 'chelsea', 'crystal-palace', 'fulham', 'spurs', 'west-ham'];
 const PAIRS: [string, string][] = [['man-city', 'man-utd'], ['liverpool', 'everton'], ['newcastle', 'sunderland']];
 
@@ -85,8 +85,8 @@ const MapIntro: React.FC<{club: Club; total: number}> = ({club, total}) => {
   const view: MapView = {
     cx: BASE.cx + (tx - BASE.cx) * zoomU,
     cy: BASE.cy + (ty - BASE.cy) * zoomU,
-    scale: BASE.scale * (0.92 + 0.08 * intro) * Math.exp(Math.log(3.2) * zoomU),
-    screenY: BASE.screenY! + (1150 - BASE.screenY!) * zoomU,
+    scale: BASE.scale * (0.92 + 0.08 * intro) * Math.exp(Math.log(4.2) * zoomU),
+    screenY: BASE.screenY! + (1080 - BASE.screenY!) * zoomU,
   };
   const pos = layout(clubs, view, 1 - zoomU);
   const lonPos = pos['arsenal'];
@@ -151,11 +151,11 @@ const MapIntro: React.FC<{club: Club; total: number}> = ({club, total}) => {
           borderRadius: '50%', border: `6px solid ${club.colour}`, opacity: 1 - (f - LAND) / 20}} />
       ) : null}
       {/* hook */}
-      <div style={{position: 'absolute', left: 540, top: 250, transform: `translate(-50%,-50%) scale(${0.8 + 0.2 * hook})`, opacity: hook, background: BRAND.greenDark, color: '#fff',
+      <div style={{position: 'absolute', left: 540, top: 340, transform: `translate(-50%,-50%) scale(${0.8 + 0.2 * hook})`, opacity: hook, background: BRAND.greenDark, color: '#fff',
         fontWeight: 800, fontSize: 56, padding: '18px 46px', borderRadius: 999, whiteSpace: 'nowrap', boxShadow: '0 24px 60px rgba(0,0,0,.3)'}}>
         Where&apos;s it landing?
       </div>
-      <LandingHeadline club={club} total={total} at={LAND + 4} top={250} />
+      <LandingHeadline club={club} total={total} at={LAND + 4} top={340} />
       <Confetti at={LAND} colors={[club.colour, club.colour2 ?? '#fff', '#FFFFFF', BRAND.mint]} count={70} />
       {/* sound */}
       <Sfx at={0} src="whoosh.wav" volume={0.45} />
@@ -178,7 +178,6 @@ export const MapRoulette: React.FC<MapRouletteProps> = ({clubId}) => {
       <DarkBackground tint={club.colour} tintAmount={tint} />
       <Sequence durationInFrames={T.intro} name="Map roulette"><MapIntro club={club} total={round.questions.length} /></Sequence>
       <Sequence from={T.intro} durationInFrames={resultStart(round) - T.intro} name="Rapid round"><RapidRound club={club} round={round} /></Sequence>
-      <Sequence from={resultStart(round)} durationInFrames={T.result} name="Result"><Result club={club} round={round} /></Sequence>
       <Sequence from={endStart(round)} durationInFrames={T.end} name="End card"><EndCard round={round} /></Sequence>
       <MusicBed />
     </AbsoluteFill>
