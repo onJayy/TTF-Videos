@@ -99,7 +99,7 @@ export const RapidRound: React.FC<{club: Club; round: ClubRound}> = ({club, roun
 
       {/* 3-2-1 countdown ring (generated rounds) */}
       {lead >= 60 && sinceReveal < 0 ? (() => {
-        const left = Math.ceil((lead - lf) / fps);
+        const left = Math.min(3, Math.ceil((lead - lf) / fps));
         const frac = Math.min(1, lf / lead);
         const pulse = 1 + 0.14 * Math.exp(-((lf % fps) / 5));
         const urgent = left <= 1;
