@@ -9,15 +9,26 @@
  *   4. Add an entry below. The video template picks up the number of questions automatically.
  */
 export type Question = {
-  reveal: number; // seconds into the recording when the answer colour shows
   correct: boolean;
+  // Recorded rounds: seconds into the recording when the answer colour shows
+  reveal?: number;
+  // Generated rounds (no recording needed): the app screen is rebuilt from this text
+  q?: string;
+  options?: string[]; // exactly 4
+  answer?: number; // index of the right option
+  pick?: number; // index the "player" taps (defaults to the answer)
 };
 
 export type ClubRound = {
   clubId: string;
-  video: string; // path inside /public
+  video?: string; // path inside /public (recorded rounds only)
   questions: Question[];
+  pacing?: {perQuestion: number; leadIn: number}; // frames per question, seconds before the reveal
 };
+
+/** Helper for writing generated questions: the right answer is options[answer]. */
+const gen = (q: string, options: string[], answer: number, pick = answer): Question => ({q, options, answer, pick, correct: pick === answer});
+const READABLE = {perQuestion: 75, leadIn: 1.75}; // 2.5 s per question so viewers can read and play along
 
 export const ROUNDS: Record<string, ClubRound> = {
   arsenal: {
@@ -44,6 +55,27 @@ export const ROUNDS: Record<string, ClubRound> = {
       {reveal: 30.93, correct: true}, // Nuno after 5-1 v Chelsea
     ],
   },
+  // ---- generated rounds (no recording) ----
+  'man-utd': {
+    clubId: 'man-utd',
+    pacing: READABLE,
+    questions: [
+      gen('Who did Manchester United beat in the 1999 Champions League final?', ['Juventus', 'Bayern Munich', 'Barcelona', 'AC Milan'], 1),
+      gen('Which club did United sign Cristiano Ronaldo from in 2003?', ['Benfica', 'Porto', 'Sporting CP', 'Braga'], 2),
+      gen('In which year did Sir Alex Ferguson retire as United manager?', ['2011', '2012', '2013', '2014'], 2),
+      gen('Who did Manchester United beat in the 2008 Champions League final?', ['Barcelona', 'Liverpool', 'Chelsea', 'AC Milan'], 2),
+    ],
+  },
+  spurs: {
+    clubId: 'spurs',
+    pacing: READABLE,
+    questions: [
+      gen('In which year did Tottenham last win the league title?', ['1951', '1961', '1967', '1981'], 1),
+      gen('Which club did Spurs sign Gareth Bale from in 2007?', ['Cardiff City', 'Swansea City', 'Southampton', 'Leeds United'], 2),
+      gen('Who beat Tottenham in the 2019 Champions League final?', ['Real Madrid', 'Liverpool', 'Ajax', 'Barcelona'], 1),
+      gen("Who scored Spurs' hat-trick in the 2019 Champions League semi-final v Ajax?", ['Harry Kane', 'Son Heung-min', 'Lucas Moura', 'Dele Alli'], 2),
+    ],
+  },
 };
 
 export const roundFor = (clubId: string): ClubRound => {
@@ -52,11 +84,3 @@ export const roundFor = (clubId: string): ClubRound => {
   return r;
 };
 
-// Fan ranks by score percentage (edit freely)
-export const RANKS: {min: number; label: string}[] = [
-  {min: 0.9, label: 'Club Legend'},
-  {min: 0.7, label: 'Season Ticket Holder'},
-  {min: 0.4, label: 'Matchgoer'},
-  {min: 0, label: 'Plastic'},
-];
-export const rankFor = (score: number, total: number) => RANKS.find((r) => score / total >= r.min)!.label;

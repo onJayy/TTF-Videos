@@ -4,10 +4,10 @@ Two 9:16 (1080×1920) video templates that promote the **Club Pride** game mode 
 
 | Composition | Hook | Then |
 |---|---|---|
-| `SlotSpin` | A slot-machine reel of stadium badges spins, rattles and lands on a club | rapid-fire round from your real screen recording → score + fan rank → "Can you beat it?" end card |
+| `SlotSpin` | A slot-machine reel of stadium badges spins, rattles and lands on a club | rapid-fire round (from a real screen recording or generated questions) → score → "Can you beat it?" end card |
 | `MapRoulette` | A spotlight hops between grounds on a map of England, slows, lands on a club and zooms in | same rapid-fire round → score → end card |
 
-Each video is ~16 s for a 6-question round (length adjusts to the number of questions).
+Each video is ~16–19 s (length adjusts to the number of questions).
 
 ## Quick start
 
@@ -41,6 +41,19 @@ npx remotion render MapRoulette out/arsenal-map.mp4 --props='{"clubId":"arsenal"
    ```
 5. Render with `--props='{"clubId":"newcastle"}'`.
 
+### Or skip the recording: write the questions
+
+Rounds can also be generated. The app's question screen is rebuilt in the video (score, boost bar, question card, A–D answers, green reveal, +150, Next Question), so no recording is needed:
+
+```ts
+spurs: {clubId: 'spurs', pacing: READABLE, questions: [
+  gen('Who beat Tottenham in the 2019 Champions League final?', ['Real Madrid', 'Liverpool', 'Ajax', 'Barcelona'], 1),
+  // gen(question, [4 options], indexOfRightAnswer, indexTapped?)  – tapped defaults to the right answer
+]},
+```
+
+`READABLE` gives 2.5 s per question so viewers can read and play along. Man United and Tottenham are set up this way.
+
 Clubs (names, grounds, colours, map positions) live in `src/data/clubs.ts`. Clubs outside this season's Premier League (e.g. West Ham) are added to the reel/map automatically when they are the featured club.
 
 ## Where things live
@@ -51,10 +64,10 @@ src/
   timing.ts                all pacing (intro length, seconds per question, result, end card)
   brand.ts                 TTF colours and font
   data/clubs.ts            clubs, grounds, colours, coordinates
-  data/rounds.ts           recordings + reveal times + fan ranks
+  data/rounds.ts           recorded rounds (reveal times) + generated rounds (questions)
   compositions/SlotSpin.tsx
   compositions/MapRoulette.tsx
-  components/              RapidRound, Phone, StadiumBadge, UkMap, Result/EndCard, Confetti, Sfx, MusicBed …
+  components/              RapidRound, Phone, AppScreen, StadiumBadge, UkMap, Result/EndCard, Confetti, Sfx, MusicBed …
 public/
   rounds/                  compressed screen recordings
   sfx/                     owned sound kit + music bed (regenerate: python3 tools/make_sfx.py)

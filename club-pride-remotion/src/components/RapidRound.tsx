@@ -3,7 +3,8 @@ import {AbsoluteFill, Easing, interpolate, Sequence, spring, useCurrentFrame, us
 import {BRAND} from '../brand';
 import {Club} from '../data/clubs';
 import {ClubRound} from '../data/rounds';
-import {T} from '../timing';
+import {leadSec, qFrames} from '../timing';
+import {AppScreen} from './AppScreen';
 import {ClubChip} from './ClubChip';
 import {Confetti} from './Confetti';
 import {Phone, PHONE} from './Phone';
@@ -16,13 +17,13 @@ const Cross = ({size = 30}) => (
   <svg width={size} height={size} viewBox="0 0 44 44"><path d="M14 14l16 16M30 14L14 30" fill="none" stroke="#fff" strokeWidth="6" strokeLinecap="round" /></svg>
 );
 
-/** Rapid-fire Club Pride round: one question every T.perQuestion frames, answer revealed on the real recording. */
+/** Rapid-fire Club Pride round: one question per qFrames(round); answers revealed on the real recording or on a rebuilt app screen. */
 export const RapidRound: React.FC<{club: Club; round: ClubRound}> = ({club, round}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const n = round.questions.length;
-  const QF = T.perQuestion;
-  const lead = Math.round(T.leadIn * fps);
+  const QF = qFrames(round);
+  const lead = Math.round(leadSec(round) * fps);
   const qi = Math.min(n - 1, Math.floor(f / QF));
   const lf = f - qi * QF;
   const scoreAt = (frame: number) => round.questions.filter((q, i) => q.correct && frame >= i * QF + lead).length;
@@ -55,10 +56,17 @@ export const RapidRound: React.FC<{club: Club; round: ClubRound}> = ({club, roun
       {/* the phone: one Sequence per question so each plays its own slice of the recording */}
       <div style={{position: 'absolute', left: 540 - PHONE.w / 2, top: 430, width: PHONE.w, height: PHONE.h, transform: phoneTransform, transformOrigin: '50% 60%', opacity: 1 - exit}}>
         {round.questions.map((qq, i) => {
-          const tb = Math.round(qq.reveal * fps) - lead;
+          if (round.video && qq.reveal !== undefined) {
+            const tb = Math.round(qq.reveal * fps) - lead;
+            return (
+              <Sequence key={i} from={i * QF} durationInFrames={QF} layout="none">
+                <Phone video={round.video} trimBefore={tb} trimAfter={tb + QF + 2} />
+              </Sequence>
+            );
+          }
           return (
             <Sequence key={i} from={i * QF} durationInFrames={QF} layout="none">
-              <Phone video={round.video} trimBefore={tb} trimAfter={tb + QF + 2} />
+              <Phone><AppScreen club={club} question={qq} index={i} total={n} reveal={lead} scoreBefore={150 * scoreAt(i * QF)} /></Phone>
             </Sequence>
           );
         })}
